@@ -16,3 +16,10 @@ git clone https://github.com/suwakei/deno-zhconv.git
 ## Usage
 
 ### convert from HalfWidth to FullWidth
+
+```typescript
+import { convertToFullWidth } from "./mod.ts";
+
+const result = convertToFullWidth("Hello, world!");
+console.log(result); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
+```
