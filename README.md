@@ -2,7 +2,7 @@
 
 
 ## Overview
-deno-zhconvはDenoでの文字変換をサポートするライブラリです。全角と半角、カナの相互変換を行います。
+deno-zhconv is a library that supports character conversion in Deno. It performs mutual conversion between full-width and half-width characters and kana.
 
 ## Installation
 
