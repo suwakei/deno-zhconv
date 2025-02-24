@@ -8,63 +8,40 @@ import {
   KANA_TEN_MAP,
   KANA_MARU_MAP
 } from "./table.ts";
+
+// 変換マップを作成
+const zenkakuToHankakuMap = new Map<string, string>();
+const hankakuToZenkakuMap = new Map<string, string>();
+
+
 /*
-
-半角文字に全角が含まれてた時反転しない
+半角に全角が混ざっていた場合反転しない
 逆も同じ
+ */
 
+// マップの初期化
+ASCII_ZENKAKU_CHARS.forEach((char, index) => zenkakuToHankakuMap.set(char, ASCII_HANKAKU_CHARS[index]));
+KANA_ZENKAKU_CHARS.forEach((char, index) => zenkakuToHankakuMap.set(char, KANA_HANKAKU_CHARS[index]));
+DIGIT_ZENKAKU_CHARS.forEach((char, index) => zenkakuToHankakuMap.set(char, DIGIT_HANKAKU_CHARS[index]));
 
-*/
+ASCII_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, ASCII_ZENKAKU_CHARS[index]));
+KANA_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, KANA_ZENKAKU_CHARS[index]));
+DIGIT_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, DIGIT_ZENKAKU_CHARS[index]));
+
 function z2h(str: string): string {
+  if (str == null) return ""; // エラーチェック
   let result = "";
   for (let char of str) {
-    let index = ASCII_ZENKAKU_CHARS.indexOf(char);
-    if (index !== -1) {
-      result += ASCII_HANKAKU_CHARS[index];
-      continue;
-    }
-    index = KANA_ZENKAKU_CHARS.indexOf(char);
-    if (index !== -1) {
-      result += KANA_HANKAKU_CHARS[index];
-      continue;
-    }
-    index = DIGIT_ZENKAKU_CHARS.indexOf(char);
-    if (index !== -1) {
-      result += DIGIT_HANKAKU_CHARS[index];
-      continue;
-    }
-    if (KANA_TEN_MAP.has(char)) {
-      result += KANA_TEN_MAP.get(char) + "ﾞ";
-      continue;
-    }
-    if (KANA_MARU_MAP.has(char)) {
-      result += KANA_MARU_MAP.get(char) + "ﾟ";
-      continue;
-    }
-    result += char;
+    result += zenkakuToHankakuMap.get(char) || char; // マップを使用
   }
   return result;
 }
 
 function h2z(str: string): string {
+  if (str == null) return ""; // エラーチェック
   let result = "";
   for (let i = 0; i < str.length; i++) {
     let char = str[i];
-    let index = ASCII_HANKAKU_CHARS.indexOf(char);
-    if (index !== -1) {
-      result += ASCII_ZENKAKU_CHARS[index];
-      continue;
-    }
-    index = KANA_HANKAKU_CHARS.indexOf(char);
-    if (index !== -1) {
-      result += KANA_ZENKAKU_CHARS[index];
-      continue;
-    }
-    index = DIGIT_HANKAKU_CHARS.indexOf(char);
-    if (index !== -1) {
-      result += DIGIT_ZENKAKU_CHARS[index];
-      continue;
-    }
     if (char === "ﾞ" && i > 0 && KANA_TEN_MAP.has(str[i - 1])) {
       result = result.slice(0, -1) + KANA_TEN_MAP.get(str[i - 1]);
       continue;
@@ -73,11 +50,10 @@ function h2z(str: string): string {
       result = result.slice(0, -1) + KANA_MARU_MAP.get(str[i - 1]);
       continue;
     }
-    result += char;
+    result += hankakuToZenkakuMap.get(char) || char; // マップを使用
   }
   return result;
 }
-
 
 console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
 console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
