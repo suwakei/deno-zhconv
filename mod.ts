@@ -8,7 +8,13 @@ import {
   KANA_TEN_MAP,
   KANA_MARU_MAP
 } from "./table.ts";
+/*
 
+半角文字に全角が含まれてた時反転しない
+逆も同じ
+
+
+*/
 function z2h(str: string): string {
   let result = "";
   for (let char of str) {
