@@ -9,7 +9,7 @@ import {
   KANA_MARU_MAP
 } from "./table.ts";
 
-function convertToHalfWidth(str: string): string {
+function z2h(str: string): string {
   let result = "";
   for (let char of str) {
     let index = ASCII_ZENKAKU_CHARS.indexOf(char);
@@ -40,7 +40,7 @@ function convertToHalfWidth(str: string): string {
   return result;
 }
 
-function convertToFullWidth(str: string): string {
+function h2z(str: string): string {
   let result = "";
   for (let i = 0; i < str.length; i++) {
     let char = str[i];
@@ -73,5 +73,5 @@ function convertToFullWidth(str: string): string {
 }
 
 
-console.log(convertToHalfWidth("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
-console.log(convertToFullWidth("Hello, world!")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
+console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
+console.log(h2z("Hello, world!")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
