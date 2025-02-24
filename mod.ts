@@ -74,4 +74,4 @@ function h2z(str: string): string {
 
 
 console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
-console.log(h2z("Hello, world!")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
+console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
