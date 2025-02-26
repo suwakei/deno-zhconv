@@ -53,10 +53,9 @@ export function z2h(str: string | null): string {
   return result;
 }
 
-console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
-console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
+
 export function h2z(str: string): string {
-  if (str === null) return ""; // エラーチェック
+  if (str === null) return "";
   if (str === "") return ""
   let result = "";
   let isZenkaku = false;
@@ -88,8 +87,3 @@ export function h2z(str: string): string {
   }
   return result;
 }
-
-console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
-
-console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
-console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
