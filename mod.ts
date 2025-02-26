@@ -28,7 +28,7 @@ ASCII_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, ASCII
 KANA_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, KANA_ZENKAKU_CHARS[index]));
 DIGIT_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, DIGIT_ZENKAKU_CHARS[index]));
 
-function z2h(str: string): string {
+export function z2h(str: string): string {
   if (str == null) return ""; // エラーチェック
   let result = "";
   for (let char of str) {
@@ -37,7 +37,7 @@ function z2h(str: string): string {
   return result;
 }
 
-function h2z(str: string): string {
+export function h2z(str: string): string {
   if (str === null) return ""; // エラーチェック
 　　if (str === "") return ""
   let result = "";
