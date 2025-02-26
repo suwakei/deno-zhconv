@@ -38,8 +38,20 @@ function z2h(str: string): string {
 }
 
 function h2z(str: string): string {
-  if (str == null) return ""; // エラーチェック
+  if (str === null) return ""; // エラーチェック
+　　if (str === "") return ""
   let result = "";
+  let isZenkaku = false;
+  
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    // 全角文字が含まれているかチェック
+    if (zenkakuToHankakuMap.has(char)) {
+      isZenkaku = true;
+      break;
+    }
+  }
+
   for (let i = 0; i < str.length; i++) {
     let char = str[i];
     if (char === "ﾞ" && i > 0 && KANA_TEN_MAP.has(str[i - 1])) {
@@ -50,10 +62,16 @@ function h2z(str: string): string {
       result = result.slice(0, -1) + KANA_MARU_MAP.get(str[i - 1]);
       continue;
     }
-    result += hankakuToZenkakuMap.get(char) || char; // マップを使用
+    if (isZenkaku) {
+      result += hankakuToZenkakuMap.get(char) || char; // 全角に変換
+    } else {
+      result += char; // そのまま
+    }
   }
   return result;
 }
+
+console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
 
 console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
 console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
