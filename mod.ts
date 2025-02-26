@@ -28,22 +28,22 @@ ASCII_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, ASCII
 KANA_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, KANA_ZENKAKU_CHARS[index]));
 DIGIT_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, DIGIT_ZENKAKU_CHARS[index]));
 
-export function z2h(str: string): string {
+export function z2h(str: string | null): string {
   if (str === null) return ""; // エラーチェック
- if (str === "") return ""
+  if (str === "") return ""
   let result = "";
   let isHankaku = false;
 
   // 半角文字が含まれているかチェック
   for (let i = 0; i < str.length; i++) {
-    let char = str[i];
+    const char = str[i];
     if (hankakuToZenkakuMap.has(char)) {
       isHankaku = true;
       break;
     }
   }
 
-  for (let char of str) {
+  for (const char of str) {
     if (isHankaku) {
       result += zenkakuToHankakuMap.get(char) || char; // 半角に変換
     } else {
@@ -57,12 +57,12 @@ console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
 console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
 export function h2z(str: string): string {
   if (str === null) return ""; // エラーチェック
-　　if (str === "") return ""
+  if (str === "") return ""
   let result = "";
   let isZenkaku = false;
   
   for (let i = 0; i < str.length; i++) {
-    let char = str[i];
+    const char = str[i];
     // 全角文字が含まれているかチェック
     if (zenkakuToHankakuMap.has(char)) {
       isZenkaku = true;
@@ -71,7 +71,7 @@ export function h2z(str: string): string {
   }
 
   for (let i = 0; i < str.length; i++) {
-    let char = str[i];
+    const char = str[i];
     if (char === "ﾞ" && i > 0 && KANA_TEN_MAP.has(str[i - 1])) {
       result = result.slice(0, -1) + KANA_TEN_MAP.get(str[i - 1]);
       continue;
