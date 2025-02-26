@@ -31,12 +31,29 @@ DIGIT_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, DIGIT
 export function z2h(str: string): string {
   if (str == null) return ""; // エラーチェック
   let result = "";
+  let isHankaku = false;
+
+  // 半角文字が含まれているかチェック
+  for (let i = 0; i < str.length; i++) {
+    let char = str[i];
+    if (hankakuToZenkakuMap.has(char)) {
+      isHankaku = true;
+      break;
+    }
+  }
+
   for (let char of str) {
-    result += zenkakuToHankakuMap.get(char) || char; // マップを使用
+    if (isHankaku) {
+      result += zenkakuToHankakuMap.get(char) || char; // 半角に変換
+    } else {
+      result += char; // そのまま
+    }
   }
   return result;
 }
 
+console.log(z2h("Ｈｅｌｌｏ， ｗｏｒｌｄ！")); // "Hello, world!"
+console.log(h2z("Hello, ｗｏｒｌｄ！")); // "Ｈｅｌｌｏ， ｗｏｒｌｄ！"
 export function h2z(str: string): string {
   if (str === null) return ""; // エラーチェック
 　　if (str === "") return ""
