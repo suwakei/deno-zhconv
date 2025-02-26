@@ -29,7 +29,8 @@ KANA_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, KANA_Z
 DIGIT_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, DIGIT_ZENKAKU_CHARS[index]));
 
 export function z2h(str: string): string {
-  if (str == null) return ""; // エラーチェック
+  if (str === null) return ""; // エラーチェック
+ if (str === "") return ""
   let result = "";
   let isHankaku = false;
 
