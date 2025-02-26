@@ -8,7 +8,7 @@ Deno.test("z2h: 全角文字を半角に変換", () => {
 });
 
 Deno.test("z2h: 半角文字を含む全角文字列を半角に変換", () => {
-  const input = "Ｈｅｌｌｏ， ｗｏｒｌｄ！";
+  const input = "Ｈｅｌｌｏ, world";
   const expected = "Hello, world!";
   assertEquals(z2h(input), expected);
 });
