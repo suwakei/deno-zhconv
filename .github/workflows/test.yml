@@ -8,18 +8,14 @@ on:
 workflow_dispatch:
 
 jobs:
-  test:
+  deno:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
       - uses: actions/checkout@v4
-
-      - name: Setup deno
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: "2.3.1"
-
-      - name: Run test
+          deno-version: v1.x
+      - name: test
         run: |
           deno test --coverage
           deno coverage --lcov > coverage.lcov          
