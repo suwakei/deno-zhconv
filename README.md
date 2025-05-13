@@ -1,5 +1,7 @@
 # deno-zhconv
 
+[![codecov](https://codecov.io/gh/suwakei/deno-zhconv/graph/badge.svg?token=HPK546J57Z)](https://codecov.io/gh/suwakei/deno-zhconv)
+
 
 ## Overview
 deno-zhconv is a library that supports character conversion in Deno. It performs mutual conversion between full-width and half-width characters and kana.
