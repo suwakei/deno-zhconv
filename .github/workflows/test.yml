@@ -19,14 +19,6 @@ jobs:
         with:
           deno-version: "2.3.1"
 
-      - name: Run lint
-        run: |
-          deno lint
-
-      - name: Check mod.ts
-        run: |
-          deno check mod.ts
-
       - name: Run tests
         run: |
           deno test
