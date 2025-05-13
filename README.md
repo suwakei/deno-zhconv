@@ -1,7 +1,7 @@
 # deno-zhconv
 
 [![Test Status](https://github.com/suwakei/deno-zhconv/actions/workflows/test.yml/badge.svg)](https://github.com/suwakei/deno-zhconv/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/suwakei/deno-zhconv/graph/badge.svg?token=HPK546J57Z)](https://codecov.io/gh/suwakei/deno-zhconv)
+[![codecov](https://codecov.io/github/suwakei/deno-zhconv/branch/main/graph/badge.svg?token=HPK546J57Z)](https://codecov.io/github/suwakei/deno-zhconv)
 
 
 ## Overview
