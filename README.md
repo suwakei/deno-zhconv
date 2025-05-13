@@ -7,9 +7,16 @@ deno-zhconv is a library that supports character conversion in Deno. It performs
 URL: deno.land
 https://deno.land/x/zhconv@1.0.1
 
+URL: jsr.io
+https://jsr.io/@suwakei/zhconv
+
 ## Installation
 ```typescript
 import {h2z, z2h} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
+```
+or
+```typescript
+import {h2z, z2h} from "jsr:@suwakei/zhconv";
 ```
 
 ## Usage
@@ -17,7 +24,7 @@ import {h2z, z2h} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
 ### convert from HalfWidth to FullWidth
 
 ```typescript
-import { h2z } from "https://deno.land/x/zhconv@1.0.1/mod.ts";
+import { h2z } from "https://deno.land/x/zhconv@1.0.1/mod.ts"; // or import { h2z } from "jsr:@suwakei/zhconv";
 
 
 let result = h2z("Hello, world!")
