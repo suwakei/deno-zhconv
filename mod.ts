@@ -94,4 +94,4 @@ export function z2h(str: string | null): string {
         i++;
     }
     return resultParts.join("");
-}
+  }
