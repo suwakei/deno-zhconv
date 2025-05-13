@@ -1,35 +1,9 @@
-import {
-  ASCII_ZENKAKU_CHARS,
-  ASCII_HANKAKU_CHARS,
-  KANA_ZENKAKU_CHARS,
-  KANA_HANKAKU_CHARS,
-  DIGIT_ZENKAKU_CHARS,
-  DIGIT_HANKAKU_CHARS,
-  KANA_TEN_MAP,
-  KANA_MARU_MAP
-} from "./table.ts";
+import { createConversionTables } from "./table.ts";
 
-// 変換マップを作成
-const zenkakuToHankakuMap = new Map<string, string>();
-const hankakuToZenkakuMap = new Map<string, string>();
+const convTable = createConversionTables();
 
-
-/*
-半角に全角が混ざっていた場合反転しない
-逆も同じ
- */
-
-// マップの初期化
-ASCII_ZENKAKU_CHARS.forEach((char, index) => zenkakuToHankakuMap.set(char, ASCII_HANKAKU_CHARS[index]));
-KANA_ZENKAKU_CHARS.forEach((char, index) => zenkakuToHankakuMap.set(char, KANA_HANKAKU_CHARS[index]));
-DIGIT_ZENKAKU_CHARS.forEach((char, index) => zenkakuToHankakuMap.set(char, DIGIT_HANKAKU_CHARS[index]));
-
-ASCII_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, ASCII_ZENKAKU_CHARS[index]));
-KANA_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, KANA_ZENKAKU_CHARS[index]));
-DIGIT_HANKAKU_CHARS.forEach((char, index) => hankakuToZenkakuMap.set(char, DIGIT_ZENKAKU_CHARS[index]));
-
-export function z2h(str: string | null): string {
-  if (str === null) return ""; // エラーチェック
+export function z2h(str: string): string {
+  if (str === null) return ""
   if (str === "") return ""
   let result = "";
   let isHankaku = false;
