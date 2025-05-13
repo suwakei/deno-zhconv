@@ -4,6 +4,9 @@
 ## Overview
 deno-zhconv is a library that supports character conversion in Deno. It performs mutual conversion between full-width and half-width characters and kana.
 
+URL: deno.land
+https://deno.land/x/zhconv@1.0.1
+
 ## Installation
 ```typescript
 import {h2z, z2h} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
