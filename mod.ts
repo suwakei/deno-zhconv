@@ -2,7 +2,7 @@ import { createConversionTables } from "./table.ts";
 
 const convTables = createConversionTables();
 
-
+//h2z returns a string with half-width characters converted to full-width characters.
 export function h2z(str: string | null): string {
   if (str === null || str === "") {
       return "";
@@ -54,6 +54,7 @@ export function h2z(str: string | null): string {
   return resultParts.join("");
 }
 
+// z2h returns a string with full-width characters converted to half-width characters.
 export function z2h(str: string | null): string {
     if (str === null || str === "") {
         return "";
