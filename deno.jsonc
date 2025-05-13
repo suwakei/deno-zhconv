@@ -1,0 +1,13 @@
+{
+    "name": "@suwakei/zhconv",
+    "version": "1.0.1",
+    "license": "BSD 2-Clause",
+    "exports": "./mod.ts",
+    "publish": {
+    "include": [
+        "LICENSE",
+        "README.md",
+        "mod.ts"
+    ]
+    }
+}
