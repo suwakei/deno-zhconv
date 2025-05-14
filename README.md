@@ -17,7 +17,7 @@ deno-zhconv is a library that supports character conversion in Deno. It performs
 
 ## Installation
 ```typescript
-import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
+import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.1.1/mod.ts"
 ```
 or
 ```typescript
