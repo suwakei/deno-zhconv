@@ -22,14 +22,3 @@ jobs:
 
       - name: Publish package to jsr
         run: npx jsr publish
-
-      - name: Build package for npm
-        run: deno run -A build_npm.ts
-
-      - name: Change Dir
-        run: cd npm
-
-      - name: Publish package to npm
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
