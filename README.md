@@ -13,6 +13,9 @@ https://deno.land/x/zhconv
 URL: jsr.io
 https://jsr.io/@suwakei/zhconv
 
+zhconv written in other langage
+- Go: https://github.com/suwakei/go-zhconv
+
 ## Installation
 ```typescript
 import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
