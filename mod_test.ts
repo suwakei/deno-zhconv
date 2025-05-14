@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { h2z, z2h } from "./mod.ts";
+import { h2z, z2h, h2zAt, z2hAt } from "./mod.ts";
 
 Deno.test("h2z: empty string", () => {
     assertEquals(h2z(""), "");
@@ -152,4 +152,160 @@ Deno.test("z2h: specific case from Go test", () => {
     assertEquals(z2h("ヴ"), "ｳﾞ");
     assertEquals(z2h("゛"), "ﾞ"); // Standalone dakuten
     assertEquals(z2h("゜"), "ﾟ"); // Standalone handakuten
+});
+
+
+Deno.test("h2z: empty string", () => {
+// Unchanged lines
+    assertEquals(z2h("゛"), "ﾞ"); // Standalone dakuten
+    assertEquals(z2h("゜"), "ﾟ"); // Standalone handakuten
+});
+
+// -------------h2zAt_test--------------
+
+Deno.test("h2zAt: empty string", () => {
+    assertEquals(h2zAt(""), "");
+});
+
+Deno.test("h2zAt: no indices provided", () => {
+    assertEquals(h2zAt("abc 123 ｱｲｳ"), "abc 123 ｱｲｳ");
+});
+
+Deno.test("h2zAt: convert single ASCII char", () => {
+    assertEquals(h2zAt("abc", 0), "ａbc");
+    assertEquals(h2zAt("abc", 1), "aｂc");
+    assertEquals(h2zAt("abc", 2), "abｃ");
+    assertEquals(h2zAt("Hello World", 6), "Hello Ｗorld"); // Space
+});
+
+Deno.test("h2zAt: convert single Digit char", () => {
+    assertEquals(h2zAt("12345", 0), "１2345");
+    assertEquals(h2zAt("12345", 4), "1234５");
+});
+
+Deno.test("h2zAt: convert single Katakana char", () => {
+    assertEquals(h2zAt("ｱｲｳｴｵ", 0), "アｲｳｴｵ");
+    assertEquals(h2zAt("ｱｲｳｴｵ", 2), "ｱｲウｴｵ");
+});
+
+Deno.test("h2zAt: convert multiple chars at specified indices", () => {
+    assertEquals(h2zAt("abc 123 ｱｲｳ", 0, 4, 8), "ａbc １23 アｲｳ");
+    assertEquals(h2zAt("abc 123 ｱｲｳ", 2, 6, 7), "abｃ 12３　ｱｲｳ");
+});
+
+Deno.test("h2zAt: convert chars with combined Dakuten/Handakuten at base index", () => {
+    // Index points to the base character ('ｶ', 'ﾊ')
+    assertEquals(h2zAt("ｶﾞｷﾞﾊﾟﾋﾟ", 0), "ガｷﾞﾊﾟﾋﾟ"); // Converts 'ｶ' + 'ﾞ' at index 0
+    assertEquals(h2zAt("ｶﾞｷﾞﾊﾟﾋﾟ", 2), "ｶﾞギﾊﾟﾋﾟ"); // Converts 'ｷ' + 'ﾞ' at index 2
+    assertEquals(h2zAt("ｶﾞｷﾞﾊﾟﾋﾟ", 4), "ｶﾞｷﾞパﾋﾟ"); // Converts 'ﾊ' + 'ﾟ' at index 4
+    assertEquals(h2zAt("ｳﾞ", 0), "ヴ"); // Converts 'ｳ' + 'ﾞ' at index 0
+});
+
+Deno.test("h2zAt: convert chars with combined Dakuten/Handakuten at combining mark index", () => {
+    // Index points to the combining mark ('ﾞ', 'ﾟ')
+    // The combining mark itself is converted if it's in KANA_H2Z_CHARS_MAP
+    assertEquals(h2zAt("ｶﾞｷﾞﾊﾟﾋﾟ", 1), "ｶ゛ｷﾞﾊﾟﾋﾟ"); // Converts 'ﾞ' at index 1 to '゛'
+    assertEquals(h2zAt("ｶﾞｷﾞﾊﾟﾋﾟ", 3), "ｶﾞｷ゛ﾊﾟﾋﾟ"); // Converts 'ﾞ' at index 3 to '゛'
+    assertEquals(h2zAt("ｶﾞｷﾞﾊﾟﾋﾟ", 5), "ｶﾞｷﾞﾊ゜ﾋﾟ"); // Converts 'ﾟ' at index 5 to '゜'
+    assertEquals(h2zAt("ｳﾞ", 1), "ｳ゛"); // Converts 'ﾞ' at index 1 to '゛'
+});
+
+Deno.test("h2zAt: convert chars with combined Dakuten/Handakuten at both indices", () => {
+    // Indices point to both the base and the combining mark
+    assertEquals(h2zAt("ｶﾞｷﾞ", 0, 1), "ガｷﾞ"); // Converts 'ｶ'+'ﾞ' at 0, then 'ﾞ' at 1
+    assertEquals(h2zAt("ｶﾞｷﾞ", 0, 2), "ガギ"); // Converts 'ｶ'+'ﾞ' at 0, then 'ｷ' at 2
+    assertEquals(h2zAt("ｶﾞｷﾞ", 0, 1, 2, 3), "ガギ"); // Converts 'ｶ'+'ﾞ' at 0, 'ﾞ' at 1, 'ｷ'+'ﾞ' at 2, 'ﾞ' at 3
+});
+
+Deno.test("h2zAt: indices pointing to non-convertible characters", () => {
+    assertEquals(h2zAt("あいうえお", 0, 2, 4), "あいうえお"); // Already full-width Hiragana
+    assertEquals(h2zAt("漢字", 0, 1), "漢字"); // Kanji
+    assertEquals(h2zAt("abc", 0, 1, 2, 10), "abc"); // Index 10 is out of bounds, should return original string
+});
+
+Deno.test("h2zAt: invalid indices (negative or out of bounds)", () => {
+    // Go version returns original string for invalid indices.
+    assertEquals(h2zAt("abc", -1), "abc");
+    assertEquals(h2zAt("abc", 3), "abc");
+    assertEquals(h2zAt("abc", 0, -1), "abc");
+    assertEquals(h2zAt("abc", 0, 3), "abc");
+    assertEquals(h2zAt("abc", -1, 3), "abc");
+    assertEquals(h2zAt("abc", 0, 1, 2, 100), "abc");
+});
+
+Deno.test("h2zAt: duplicate indices", () => {
+    assertEquals(h2zAt("abc", 0, 0, 1, 1, 2, 2), "ａｂｃ");
+});
+
+
+// -------------z2hAt_test--------------
+
+Deno.test("z2hAt: empty string", () => {
+    assertEquals(z2hAt(""), "");
+});
+
+
+Deno.test("z2hAt: convert single ASCII char", () => {
+    assertEquals(z2hAt("ａｂｃ", 0), "aｂｃ");
+    assertEquals(z2hAt("ａｂｃ", 1), "ａbｃ");
+    assertEquals(z2hAt("ａｂｃ", 2), "ａｂc");
+    assertEquals(z2hAt("Ｈｅｌｌｏ　Ｗｏｒｌｄ", 0), "Hｅｌｌｏ　Ｗｏｒｌｄ");
+    assertEquals(z2hAt("Ｈｅｌｌｏ　Ｗｏｒｌｄ", 6), "Ｈｅｌｌｏ　Wｏｒｌｄ"); // Space
+});
+
+Deno.test("z2hAt: convert single Digit char", () => {
+    assertEquals(z2hAt("１２３４５", 0), "1２３４５");
+    assertEquals(z2hAt("１２３４５", 4), "１２３４5");
+});
+
+Deno.test("z2hAt: convert single Katakana char", () => {
+    assertEquals(z2hAt("アイウエオ", 0), "ｱイウエオ");
+    assertEquals(z2hAt("アイウエオ", 2), "アイｳエオ");
+});
+
+Deno.test("z2hAt: convert multiple chars at specified indices", () => {
+    assertEquals(z2hAt("ａｂｃ １２３ ＡＢＣ", 0, 4, 8), "aｂｃ 1２３ AＢＣ");
+    assertEquals(z2hAt("ａｂｃ １２３ ＡＢＣ", 2, 6, 10), "ａｂc １２3 ＡＢC");
+});
+
+Deno.test("z2hAt: convert chars with Dakuten/Handakuten at specified indices", () => {
+    assertEquals(z2hAt("ガギグゲゴ", 0), "ｶﾞギグゲゴ"); // 'ガ' -> 'ｶﾞ'
+    assertEquals(z2hAt("ガギグゲゴ", 2), "ガギｸﾞゲゴ"); // 'ギ' -> 'ｷﾞ'
+    assertEquals(z2hAt("パピプペポ", 0), "ﾊﾟピプペポ"); // 'パ' -> 'ﾊﾟ'
+    assertEquals(z2hAt("ヴ", 0), "ｳﾞ"); // 'ヴ' -> 'ｳﾞ'
+});
+
+Deno.test("z2hAt: mixed string with full-width and half-width chars", () => {
+    assertEquals(z2hAt("ａｂｃ １２３ ＡＢＣ カキクケコ", 0, 4, 10), "aｂｃ 1２３ ＡＢC カキクケコ");
+    assertEquals(z2hAt("ａｂｃ １２３ ＡＢＣ カキクケコ", 2, 6, 14), "ａｂc １２3 ＡＢＣ カキｸケコ");
+});
+
+Deno.test("z2hAt: indices pointing to non-convertible characters", () => {
+    assertEquals(z2hAt("あいうえお", 0, 2, 4), "あいうえお"); // Hiragana (no conversion)
+    assertEquals(z2hAt("漢字", 0, 1), "漢字"); // Kanji (no conversion)
+    assertEquals(z2hAt("abc123", 0, 1, 2), "abc123"); // Half-width ASCII and digits (no conversion)
+});
+
+Deno.test("z2hAt: invalid indices (negative or out of bounds)", () => {
+    // Go version returns original string for invalid indices
+    assertEquals(z2hAt("ａｂｃ", -1), "ａｂｃ");
+    assertEquals(z2hAt("ａｂｃ", 3), "ａｂｃ");
+    assertEquals(z2hAt("ａｂｃ", 0, -1), "ａｂｃ");
+    assertEquals(z2hAt("ａｂｃ", 0, 3), "ａｂｃ");
+    assertEquals(z2hAt("ａｂｃ", -1, 3), "ａｂｃ");
+    assertEquals(z2hAt("ａｂｃ", 0, 1, 2, 100), "ａｂｃ");
+});
+
+Deno.test("z2hAt: specific case from Go test", () => {
+    assertEquals(z2hAt("ガ", 0), "ｶﾞ");
+    assertEquals(z2hAt("パ", 0), "ﾊﾟ");
+    assertEquals(z2hAt("ヴ", 0), "ｳﾞ");
+});
+
+Deno.test("z2hAt: duplicate indices", () => {
+    assertEquals(z2hAt("ａｂｃ", 0, 0, 1, 1, 2, 2), "abc");
+});
+
+Deno.test("z2hAt: index at last character", () => {
+    assertEquals(z2hAt("ａｂｃ", 2), "ａｂc");
 });

@@ -22,12 +22,34 @@ or
 import {h2z, z2h} from "https://jsr.io/@suwakei/zhconv";
 ```
 
+## Features
+```typescript
+// H2z converts half-width characters (hankaku) in a string to full-width characters (zenkaku).
+// It handles ASCII, Katakana, digits, and Katakana with dakuten/handakuten.
+function h2z(str: string): string
+
+
+// H2zAt returns string that converted from half width to full width.
+// Conversion string can be selected with the second argument.
+function h2zAt(str: string, ...at: number[]): string
+
+
+// Z2h converts full-width characters (zenkaku) in a string to half-width characters (hankaku).
+// It handles ASCII, Katakana, digits, and Katakana with dakuten/handakuten.
+function z2h(str: string): string
+
+
+// Z2hAt returns string that converted from full-width to half-width.
+// Conversion string can be selected with the second argument.
+function Z2hAt(sstr: tring, at: number[]): string
+```
+
 ## Usage
 
 ### convert from HalfWidth to FullWidth
 
 ```typescript
-import { h2z } from "https://deno.land/x/zhconv@1.0.1/mod.ts"; // or import { h2z } from "https://jsr.io/@suwakei/zhconv";
+import { h2z } from "https://deno.land/x/zhconv@1.0.2/mod.ts"; // or import { h2z } from "https://jsr.io/@suwakei/zhconv";
 
 
 let result = h2z("Hello, world!")
@@ -79,7 +101,7 @@ console.log(result) // １バイト文字と２バイト文字が混在するテ
 ### convert from HalfWidth to FullWidth
 
 ```typescript
-import { z2h } from "https://deno.land/x/zhconv@1.0.1/mod.ts";
+import { z2h } from "https://deno.land/x/zhconv@1.0.2/mod.ts";
 
 
 let result = z2h("ＡＢＣｄｅｆ　ＸＹＺ！＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝～")
