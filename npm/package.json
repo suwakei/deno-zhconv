@@ -1,0 +1,28 @@
+{
+  "module": "./esm/mod.js",
+  "main": "./script/mod.js",
+  "name": "@suwakei/zhconv",
+  "description": "deno-zhconv is a library that supports character conversion in Deno. It performs mutual conversion between full-width and half-width characters and kana.",
+  "license": "BSD 2-Clause",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suwakei/deno-zhconv.git"
+  },
+  "bugs": {
+    "url": "https://github.com/suwakei/deno-zhconv/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./esm/mod.js",
+      "require": "./script/mod.js"
+    }
+  },
+  "scripts": {
+    "test": "node test_runner.js"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "picocolors": "^1.0.0",
+    "@deno/shim-deno": "~0.16.1"
+  }
+}

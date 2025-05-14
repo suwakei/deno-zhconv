@@ -13,7 +13,21 @@ jobs:
       id-token: write
 
     steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
       - uses: actions/checkout@v4
 
-      - name: Publish package
+      - name: Publish package to jsr
         run: npx jsr publish
+
+      - name: Build package for npm
+        run: deno run -A build_npm.ts
+
+      - name: Publish package to npm
+        run: cd npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
