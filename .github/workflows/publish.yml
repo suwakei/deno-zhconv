@@ -13,11 +13,8 @@ jobs:
       id-token: write
 
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
 
+      - name: Checkout repository
       - uses: actions/checkout@v4
 
       - name: Publish package to jsr
