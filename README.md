@@ -15,11 +15,11 @@ https://jsr.io/@suwakei/zhconv
 
 ## Installation
 ```typescript
-import {h2z, z2h} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
+import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.0.1/mod.ts"
 ```
 or
 ```typescript
-import {h2z, z2h} from "https://jsr.io/@suwakei/zhconv";
+import {h2z, z2h, h2zAt, z2hAt} from "https://jsr.io/@suwakei/zhconv";
 ```
 
 ## Features
@@ -41,7 +41,7 @@ function z2h(str: string): string
 
 // Z2hAt returns string that converted from full-width to half-width.
 // Conversion string can be selected with the second argument.
-function Z2hAt(sstr: tring, at: number[]): string
+function Z2hAt(str: tring, at: number[]): string
 ```
 
 ## Usage
