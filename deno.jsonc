@@ -8,6 +8,8 @@
         "LICENSE",
         "README.md",
         "mod.ts",
+        "table.ts",
+        "mod_test.ts",
         "table.ts"
     ]
     }
