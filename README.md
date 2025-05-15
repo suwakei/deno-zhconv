@@ -29,7 +29,7 @@ import {h2z, z2h, h2zAt, z2hAt} from "https://jsr.io/@suwakei/zhconv";
 /**
  * h2z converts half-width characters (hankaku) in a string to full-width characters (zenkaku).
  * It handles ASCII, Katakana, digits, and Katakana with dakuten/handakuten.
- * @param str The input string.
+ * @param "str" The input string.
  * @returns The converted string.
  */
 function h2z(str: string): string
@@ -38,17 +38,17 @@ function h2z(str: string): string
 /**
  * h2zAt returns string that converted from half width to full width.
  * Conversion string can be selected with the second argument.
- * @param str The input string.
- * @param at Indices of characters to convert.
+ * @param "str" The input string.
+ * @param "at" Indices of characters to convert.
  * @returns The converted string.
  */
 function h2zAt(str: string, ...at: number[]): string
 
 
 /**
- * Z2h converts full-width characters (zenkaku) in a string to half-width characters (hankaku).
+ * z2h converts full-width characters (zenkaku) in a string to half-width characters (hankaku).
  * It handles ASCII, Katakana, digits, and Katakana with dakuten/handakuten.
- * @param str The input string.
+ * @param "str" The input string.
  * @returns The converted string.
  */
 function z2h(str: string): string
@@ -57,8 +57,8 @@ function z2h(str: string): string
 /**
  * z2hAt returns string that converted from full-width to half-width.
  * Conversion string can be selected with the second argument.
- * @param str The input string.
- * @param at Indices of characters to convert.
+ * @param "str" The input string.
+ * @param "at" Indices of characters to convert.
  * @returns The converted string.
  */
 function Z2hAt(str: tring, at: number[]): string
