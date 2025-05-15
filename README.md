@@ -69,7 +69,7 @@ function Z2hAt(str: tring, at: number[]): string
 ### convert from HalfWidth to FullWidth
 
 ```typescript
-import { h2z } from "https://deno.land/x/zhconv@1.0.2/mod.ts"; // or import { h2z } from "https://jsr.io/@suwakei/zhconv";
+import { h2z } from "https://deno.land/x/zhconv@1.1.2/mod.ts"; // or import { h2z } from "https://jsr.io/@suwakei/zhconv";
 
 
 let result = h2z("Hello, world!")
@@ -121,7 +121,7 @@ console.log(result) // １バイト文字と２バイト文字が混在するテ
 ### convert from HalfWidth to FullWidth
 
 ```typescript
-import { z2h } from "https://deno.land/x/zhconv@1.0.2/mod.ts";
+import { z2h } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
 
 
 let result = z2h("ＡＢＣｄｅｆ　ＸＹＺ！＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝～")
