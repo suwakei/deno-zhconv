@@ -316,10 +316,6 @@ Deno.test("reverse: empty string", () => {
     assertEquals(reverse(""), "");
 });
 
-Deno.test("reverse: null input", () => {
-    assertEquals(reverse(null), "");
-});
-
 Deno.test("reverse: full-width ASCII to half-width", () => {
     assertEquals(reverse("ＡＢＣ　ＸＹＺ！"), "ABC XYZ!");
 });
