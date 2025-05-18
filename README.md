@@ -3,6 +3,15 @@
 [![Test Status](https://github.com/suwakei/deno-zhconv/actions/workflows/test.yml/badge.svg)](https://github.com/suwakei/deno-zhconv/actions/workflows/test.yml)
 [![codecov](https://codecov.io/github/suwakei/deno-zhconv/branch/main/graph/badge.svg?token=HPK546J57Z)](https://codecov.io/github/suwakei/deno-zhconv)
 
+<table>
+    <thead>
+        <tr>
+            <th style="text-align:center">English</th>
+            <th style="text-align:center"><a href="README_ja.md">日本語</a></th>
+        </tr>
+    </thead>
+</table>
+
 
 ## Overview
 deno-zhconv is a library that supports character conversion in Deno. It performs mutual conversion between full-width and half-width characters and kana.
@@ -62,6 +71,17 @@ function z2h(str: string): string
  * @returns The converted string.
  */
 function Z2hAt(str: tring, at: number[]): string
+
+
+/**
+ * Reverses the width of characters in a string.
+ * Full-width characters are converted to half-width, and half-width characters are converted to full-width.
+ * Characters that are neither full-width nor half-width, or for which no direct reverse mapping exists, remain unchanged.
+ *
+ * @param str The input string.
+ * @returns The string with character widths reversed.
+ */
+function reverse (str: string): string
 ```
 
 ## Usage
@@ -150,4 +170,79 @@ console.log(result) //  ｽﾍﾟｰｽ
 
 let result = z2h("①②③㈱㈲") // It is assumed that environment dependent characters will not be converted.
 console.log(result) // ①②③㈱㈲
+```
+
+### Partial conversion from half-width to full-width characters
+```typescript
+import { h2zAt } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
+
+
+let result = h2zAt("Hello, world!", 0, 7)
+console.log(result) // Ｈello, ｗorld!.
+
+let result = h2zAt("", 0) // Empty string.
+console.log(result) // "".
+
+let result = h2zAt("ＡＢＣ１２３アイウガパ", 0, 5) // No conversion needed (Zenkaku).
+console.log(result) // ＡＢＣ１２３アイウガパ.
+
+let result = h2zAt("ABCdef XYZ!#$%&'()*+,-./:;<=>?@[¥]^_`{|}~ \\", 3, 17)
+console.log(result) // ABCｄef XYZ!#$%&'（)*+,-./:;<=>?@[¥]^_`{|}~ \\.
+
+let result = h2zAt("0123456789",0, 5) // Hankaku Digits to Zenkaku.
+console.log(result) // ０1234５6789.
+
+let result = h2zAt("ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ", 0) // Hankaku Katakana to Zenkaku.
+console.log(result) // アｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ.
+
+let result = h2zAt("ｧｨｩｪｫｯｬｭｮ", 0) // Hankaku Katakana (Small) to Zenkaku.
+console.log(result) // ァｨｩｪｫｯｬｭｮ.
+```
+
+
+### Partial conversion from full-width to half-width characters
+```typescript
+import { z2hAt } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
+
+
+let result = z2hAt("Ｈｅｌｌｏ， ｗｏｒｌｄ！", 0, 7)
+console.log(result) // Hｅｌｌｏ， wｏｒｌｄ！.
+
+let result = z2hAt("ＡＢＣｄｅｆ　ＸＹＺ！＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝～", 3, 17)
+console.log(result) // ＡＢＣdｅｆ　ＸＹＺ！＃＄％＆’（)＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝～.
+
+let result = z2hAt("０１２３４５６７８９", 0, 5)
+console.log(result) // 0１２３４5６７８９.
+
+let result = z2hAt("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン", 0, 6, 9, 10)
+console.log(result) // ｱイウエオカｷクケｺｻシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン.
+
+let result = z2hAt("ァィゥェォッャュョ", 4)
+console.log(result) // ァィゥェｫッャュョ.
+
+```
+
+### Invert half-width and full-width characters
+```typescript
+import { reverse } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
+
+
+
+let result = reverse("abc xyz!")
+console.log(result) // ａｂｃ　ｘｙｚ！
+
+let result = reverse("０１２３４５")
+console.log(result) // 012345
+
+let result = reverse("Ｈｅｌｌｏ　Ｗｏｒｌｄ！　１２３　アイウガパ")
+console.log(result) // Hello World! 123 ｱｲｳｶﾞﾊﾟ
+
+let result = reverse("ＡbcＤＥＦｇｈ　1２３ＸＹｚ　アｲウｴオ　カｷﾞクｹﾞコ　サｼﾞスｾﾞソ　タﾁヅﾃド")
+console.log(result) //AｂｃDEFgh １23XYz ｱイｳエｵ ｶキﾞｸケﾞｺ ｻシﾞｽセﾞｿ ﾀチﾂﾞテﾄﾞ
+
+let result = reverse("１ｓｔ「ＰＲＩＣＥ」ｉｓ　￥１，０００－　（ＴＡＸ　ＩＮ）　ｶﾞﾝﾊﾞﾚ！")
+console.log(result) // 1st｢PRICE｣is \\1,000- (TAX IN) カﾞンハﾞレ!
+
+let result = reverse("テストｶﾞ")
+console.log(result) // ﾃｽﾄカﾞ
 ```
