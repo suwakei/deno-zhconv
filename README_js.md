@@ -26,7 +26,7 @@ deno-zhconv is a library that supports character conversion in Deno. It performs
 
 ## インストール方法
 ```typescript
-import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.1.1/mod.ts"
+import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.2.0/mod.ts"
 ```
 or
 ```typescript
@@ -93,7 +93,7 @@ function reverse (str: string): string
 ### 半角文字から全角文字の変換
 
 ```typescript
-import { h2z } from "https://deno.land/x/zhconv@1.1.2/mod.ts"; // or import { h2z } from "https://jsr.io/@suwakei/zhconv";
+import { h2z } from "https://deno.land/x/zhconv@1.2.0/mod.ts"; // or import { h2z } from "https://jsr.io/@suwakei/zhconv";
 
 
 let result = h2z("Hello, world!")
@@ -145,7 +145,7 @@ console.log(result) // １バイト文字と２バイト文字が混在するテ
 ### 全角文字から半角文字の変換。
 
 ```typescript
-import { z2h } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
+import { z2h } from "https://deno.land/x/zhconv@1.2.0/mod.ts";
 
 
 let result = z2h("ＡＢＣｄｅｆ　ＸＹＺ！＃＄％＆’（）＊＋，－．／：；＜＝＞？＠［￥］＾＿‘｛｜｝～")
@@ -178,7 +178,7 @@ console.log(result) // ①②③㈱㈲
 
 ### 部分的な半角文字から全角文字の変換
 ```typescript
-import { h2zAt } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
+import { h2zAt } from "https://deno.land/x/zhconv@1.2.0/mod.ts";
 
 
 let result = h2zAt("Hello, world!", 0, 7)
@@ -206,7 +206,7 @@ console.log(result) // ァｨｩｪｫｯｬｭｮ.
 
 ### 部分的な全角文字から半角文字の変換
 ```typescript
-import { z2hAt } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
+import { z2hAt } from "https://deno.land/x/zhconv@1.2.0/mod.ts";
 
 
 let result = z2hAt("Ｈｅｌｌｏ， ｗｏｒｌｄ！", 0, 7)
@@ -228,8 +228,7 @@ console.log(result) // ァィゥェｫッャュョ.
 
 ### 半角文字と全角文字の相互変換
 ```typescript
-import { reverse } from "https://deno.land/x/zhconv@1.1.2/mod.ts";
-
+import { reverse } from "https://deno.land/x/zhconv@1.2.0/mod.ts";
 
 
 let result = reverse("abc xyz!")
