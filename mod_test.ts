@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { h2z, z2h, h2zAt, z2hAt } from "./mod.ts";
+import { h2z, z2h, h2zAt, z2hAt, reverse } from "./mod.ts";
 
 Deno.test("h2z: empty string", () => {
     assertEquals(h2z(""), "");
@@ -308,4 +308,106 @@ Deno.test("z2hAt: duplicate indices", () => {
 
 Deno.test("z2hAt: index at last character", () => {
     assertEquals(z2hAt("ａｂｃ", 2), "ａｂc");
+});
+
+// -------------reverse_test--------------
+
+Deno.test("reverse: empty string", () => {
+    assertEquals(reverse(""), "");
+});
+
+Deno.test("reverse: null input", () => {
+    assertEquals(reverse(null), "");
+});
+
+Deno.test("reverse: full-width ASCII to half-width", () => {
+    assertEquals(reverse("ＡＢＣ　ＸＹＺ！"), "ABC XYZ!");
+});
+
+Deno.test("reverse: half-width ASCII to full-width", () => {
+    assertEquals(reverse("abc xyz!"), "ａｂｃ　ｘｙｚ！");
+});
+
+Deno.test("reverse: full-width Digits to half-width", () => {
+    assertEquals(reverse("０１２３４５"), "012345");
+});
+
+Deno.test("reverse: half-width Digits to full-width", () => {
+    assertEquals(reverse("67890"), "６７８９０");
+});
+
+Deno.test("reverse: full-width Katakana (Seion) to half-width", () => {
+    assertEquals(reverse("アイウエオ"), "ｱｲｳｴｵ");
+});
+
+Deno.test("reverse: half-width Katakana (Seion) to full-width", () => {
+    assertEquals(reverse("ｶｷｸｹｺ"), "カキクケコ");
+});
+
+Deno.test("reverse: full-width Katakana (Dakuten) to half-width (decomposed)", () => {
+    assertEquals(reverse("ガギグゲゴ"), "ｶﾞｷﾞｸﾞｹﾞｺﾞ");
+});
+
+Deno.test("reverse: half-width Katakana (Dakuten) to full-width (composed)", () => {
+    assertEquals(reverse("ｶﾞｷﾞｸﾞｹﾞｺﾞ"), "ガギグゲゴ");
+});
+
+Deno.test("reverse: full-width Katakana (Handakuten) to half-width (decomposed)", () => {
+    assertEquals(reverse("パピプペポ"), "ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ");
+});
+
+Deno.test("reverse: half-width Katakana (Handakuten) to full-width (composed)", () => {
+    assertEquals(reverse("ﾊﾟﾋﾟﾌﾟﾍﾟﾎﾟ"), "パピプペポ");
+});
+
+Deno.test("reverse: mixed full-width to half-width", () => {
+    assertEquals(reverse("Ｈｅｌｌｏ　Ｗｏｒｌｄ！　１２３　アイウガパ"), "Hello World! 123 ｱｲｳｶﾞﾊﾟ");
+});
+
+Deno.test("reverse: mixed half-width to full-width", () => {
+    assertEquals(reverse("Hello World! 123 ｱｲｳｶﾞﾊﾟ"), "Ｈｅｌｌｏ　Ｗｏｒｌｄ！　１２３　アイウガパ");
+});
+
+Deno.test("reverse: mixed full-half already, should reverse all", () => {
+    assertEquals(reverse("ＡbcＤＥＦｇｈ　1２３ＸＹｚ　アｲウｴオ　カｷﾞクｹﾞコ　パﾋﾟプﾍﾟポ"), "AｂｃDEFgh １23XYz ｱイｳエｵ ｶギｸゲｺ ﾊﾟピﾌﾟペﾎﾟ");
+});
+
+Deno.test("reverse: non-convertible characters (Hiragana, Kanji) mixed with convertible", () => {
+    assertEquals(reverse("あいう漢字ＡＢＣ123ｱｲｳｶﾞ"), "あいう漢字ABC１２３アイウガ");
+});
+
+Deno.test("reverse: string with only non-convertible characters", () => {
+    assertEquals(reverse("春夏秋冬"), "春夏秋冬");
+});
+
+Deno.test("reverse: full-width symbols to half-width", () => {
+    assertEquals(reverse("。、・ー「」"), "｡､･ｰ｢｣");
+});
+
+Deno.test("reverse: half-width symbols to full-width", () => {
+    assertEquals(reverse("｡､･ｰ｢｣"), "。、・ー「」");
+});
+
+Deno.test("reverse: complex mix", () => {
+    assertEquals(reverse("１ｓｔ「ＰＲＩＣＥ」ｉｓ　￥１，０００－　（ＴＡＸ　ＩＮ）　ｶﾞﾝﾊﾞﾚ！"), "1st｢PRICE｣is ¥1,000- (TAX IN) ガンバレ!");
+});
+
+Deno.test("reverse: half-width dakuten/handakuten at end of string", () => {
+    assertEquals(reverse("テストｶﾞ"), "ﾃｽﾄガ");
+    assertEquals(reverse("テストﾊﾟ"), "ﾃｽﾄパ");
+});
+
+Deno.test("reverse: full-width dakuten/handakuten at end of string", () => {
+    assertEquals(reverse("テストガ"), "ﾃｽﾄｶﾞ");
+    assertEquals(reverse("テストパ"), "ﾃｽﾄﾊﾟ");
+});
+
+Deno.test("reverse: standalone half-width dakuten/handakuten (should convert to full-width)", () => {
+    assertEquals(reverse("ﾞ"), "゛"); // From KANA_H2Z_CHARS_MAP
+    assertEquals(reverse("ﾟ"), "゜"); // From KANA_H2Z_CHARS_MAP
+});
+
+Deno.test("reverse: standalone full-width dakuten/handakuten (should convert to half-width)", () => {
+    assertEquals(reverse("゛"), "ﾞ"); // From KANA_Z2H_CHARS_MAP
+    assertEquals(reverse("゜"), "ﾟ"); // From KANA_Z2H_CHARS_MAP
 });

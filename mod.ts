@@ -4,6 +4,7 @@ const convTables = createConversionTables();
 
 /**
  * h2z returns string that converted from half width to full width.t.
+ * 
  * @param str The input string.
  * @returns The converted string.
  */
@@ -60,6 +61,7 @@ export const h2z = (str: string | null): string => {
 
 /**
  * z2h returns string that converted from full-width to half-width.
+ * 
  * @param str The input string.
  * @returns The converted string.
  */
@@ -108,6 +110,7 @@ export const z2h = (str: string | null): string => {
 /**
  * h2zAt returns string that converted from half width to full width.
  * Conversion string can be selected with the second argument.
+ * 
  * @param str The input string.
  * @param at Indices of characters to convert.
  * @returns The converted string.
@@ -137,14 +140,12 @@ export const h2zAt = (str: string, ...at: number[]): string => {
 
         if (indexToConvert + 1 < runeLen) {
             const next = runes[indexToConvert + 1];
-            // COMBINING KATAKANA-HIRAGANA VOICED SOUND MARK (U+3099)
             if (next === 'ﾞ') {
                 const zenkakuDakuten = convTables.KANA_H2Z_DAKUTEN_MAP[target];
                 if (zenkakuDakuten !== undefined) {
                     convMap.set(indexToConvert, zenkakuDakuten);
                     pairProcessed = true;
                 }
-            // COMBINING KATAKANA-HIRAGANA SEMI-VOICED SOUND MARK (U+309A)
             } else if (next === 'ﾟ') {
                 const zenkakuHandakuten = convTables.KANA_H2Z_MARU_MAP[target];
                 if (zenkakuHandakuten !== undefined) {
@@ -155,10 +156,10 @@ export const h2zAt = (str: string, ...at: number[]): string => {
         }
 
         if (pairProcessed) {
-            continue; // このインデックス（とペアの次のインデックス）は処理済み
+            continue;
         }
 
-        // ペアで処理されなかった場合、通常の文字変換を試みる
+
         let convertedChar: string | undefined;
         if ((convertedChar = convTables.ASCII_H2Z_CHARS_MAP[target]) !== undefined) {
             convMap.set(indexToConvert, convertedChar);
@@ -167,22 +168,19 @@ export const h2zAt = (str: string, ...at: number[]): string => {
         } else if ((convertedChar = convTables.DIGIT_H2Z_CHARS_MAP[target]) !== undefined) {
             convMap.set(indexToConvert, convertedChar);
         } else {
-            // 変換対象外の文字、または単独の濁点/半濁点など
-            // Go版では convMap[a] = target としているので、指定されたインデックスが変換対象なら
-            // マップには元の文字を（変更なしとして）入れる
             convMap.set(indexToConvert, target);
         }
     }
 
-    // convMap を使って結果文字列を構築
+
     const resultRunes: string[] = [];
     let i: number = 0;
     while (i < runeLen) {
-        let consumedChars = 1; // 現在の文字 `i` が消費する文字数 (通常は1)
+        let consumedChars = 1;
         if (convMap.has(i)) {
             const convertedChar = convMap.get(i)!;
             resultRunes.push(convertedChar);
-            // ペア変換の結果かどうかを確認し、そうであれば次の文字をスキップ
+
             const originalChar = runes[i];
             if (i + 1 < runeLen) {
                 const nextOriginalChar = runes[i+1];
@@ -204,6 +202,7 @@ export const h2zAt = (str: string, ...at: number[]): string => {
 /**
  * z2hAt returns string that converted from full-width to half-width.
  * Conversion string can be selected with the second argument.
+ * 
  * @param str The input string.
  * @param at Indices of characters to convert.
  * @returns The converted string.
@@ -268,3 +267,88 @@ export const z2hAt = (str: string, ...at: number[]): string => {
     }
     return outputRunes.join("");
 }
+
+/**
+ * Reverses the width of characters in a string.
+ * Full-width characters are converted to half-width, and half-width characters are converted to full-width.
+ * Characters that are neither full-width nor half-width, or for which no direct reverse mapping exists, remain unchanged.
+ *
+ * @param str The input string.
+ * @returns The string with character widths reversed.
+ */
+export const reverse = (str: string): string => {
+    if (str === "") {
+        return "";
+    }
+
+    const runes = Array.from(str);
+    const runeLen = runes.length;
+    const resultParts: string[] = [];
+
+    let i = 0;
+    while (i < runeLen) {
+        const char = runes[i];
+        let converted = false;
+
+        // 1. Try to convert from Full-width to Half-width
+        let halfWidth: string | undefined;
+        if ((halfWidth = convTables.KANA_Z2H_DAKUTEN_MAP[char]) !== undefined) { // e.g., 'ガ' -> 'ｶﾞ'
+            resultParts.push(halfWidth);
+            converted = true;
+        } else if ((halfWidth = convTables.KANA_Z2H_MARU_MAP[char]) !== undefined) { // e.g., 'パ' -> 'ﾊﾟ'
+            resultParts.push(halfWidth);
+            converted = true;
+        } else if ((halfWidth = convTables.ASCII_Z2H_CHARS_MAP[char]) !== undefined) { // e.g., 'Ａ' -> 'A'
+            resultParts.push(halfWidth);
+            converted = true;
+        } else if ((halfWidth = convTables.DIGIT_Z2H_CHARS_MAP[char]) !== undefined) { // e.g., '１' -> '1'
+            resultParts.push(halfWidth);
+            converted = true;
+        } else if ((halfWidth = convTables.KANA_Z2H_CHARS_MAP[char]) !== undefined) { // e.g., 'ア' -> 'ｱ'
+            resultParts.push(halfWidth);
+            converted = true;
+        }
+
+        if (converted) {
+            i++;
+            continue;
+        }
+
+        // 2. Try to convert from Half-width to Full-width (if not converted above)
+        // Check for Half-width Katakana with Dakuten/Handakuten (2 runes sequence)
+        if (i + 1 < runeLen) {
+            const nextChar = runes[i + 1];
+            let fullWidthCombined: string | undefined;
+
+            if (nextChar === 'ﾞ') { // Half-width Dakuten mark
+                fullWidthCombined = convTables.KANA_H2Z_DAKUTEN_MAP[char]; // e.g., 'ｶ' -> 'ガ'
+                if (fullWidthCombined !== undefined) {
+                    resultParts.push(fullWidthCombined);
+                    i += 2;
+                    converted = true;
+                }
+            } else if (nextChar === 'ﾟ') { // Half-width Handakuten mark
+                fullWidthCombined = convTables.KANA_H2Z_MARU_MAP[char]; // e.g., 'ﾊ' -> 'パ'
+                if (fullWidthCombined !== undefined) {
+                    resultParts.push(fullWidthCombined);
+                    i += 2;
+                    converted = true;
+                }
+            }
+        }
+
+        if (converted) {
+            continue;
+        }
+
+        // Standard Half-width to Full-width conversions (single rune)
+        let fullWidthSingle: string | undefined;
+        if ((fullWidthSingle = convTables.ASCII_H2Z_CHARS_MAP[char]) !== undefined) resultParts.push(fullWidthSingle);
+        else if ((fullWidthSingle = convTables.KANA_H2Z_CHARS_MAP[char]) !== undefined) resultParts.push(fullWidthSingle);
+        else if ((fullWidthSingle = convTables.DIGIT_H2Z_CHARS_MAP[char]) !== undefined) resultParts.push(fullWidthSingle);
+        else resultParts.push(char); // If no conversion, append original
+
+        i++;
+    }
+    return resultParts.join("");
+};
