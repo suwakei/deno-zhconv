@@ -24,7 +24,7 @@ deno-zhconv is a library that supports character conversion in Deno. It performs
 ### zhconv written in other langage
 - Go: https://github.com/suwakei/go-zhconv
 
-## Installation
+## Installing
 ```typescript
 import {h2z, z2h, h2zAt, z2hAt} from "https://deno.land/x/zhconv@1.2.0/mod.ts"
 ```
